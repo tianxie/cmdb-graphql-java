@@ -1,0 +1,18 @@
+type Module {
+    id: String!
+    name: String!
+    devices: [Device]
+}
+
+type Device {
+    id: String!
+
+}
+
+schema {
+    query: Query
+}
+
+type Query {
+    allModules: [Module]
+}
