@@ -30,6 +30,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator")
     testCompile('org.springframework.boot:spring-boot-starter-test')
 
+    compileOnly 'org.projectlombok:lombok:1.18.0'
     compile 'com.graphql-java:graphql-spring-boot-starter:4.2.0'
     compile 'com.graphql-java:graphiql-spring-boot-starter:4.2.0'
     compile 'com.graphql-java:voyager-spring-boot-starter:4.2.0'

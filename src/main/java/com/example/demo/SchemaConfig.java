@@ -42,7 +42,7 @@ public class SchemaConfig {
                         .type(GraphQLString)
                 )
                 .field(field -> field
-                        .name("name")
+                        .name("mod_name")
                         .type(GraphQLString)
                 )
                 .field(field -> field
