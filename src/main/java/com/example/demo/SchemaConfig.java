@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,17 +16,46 @@ public class SchemaConfig {
     @Autowired
     private DataFetchers dataFetchers;
 
-    @Autowired
-    private DataModels dataModels;
+//    @Autowired
+//    private DataModels dataModels;
 
     @Bean
     GraphQLSchema schema() {
+        final GraphQLObjectType deviceType = newObject()
+                .name("Device")
+                .field(field -> field
+                        .name("id")
+                        .type(GraphQLString)
+                )
+                .field(field -> field
+                        .name("hostname")
+                        .type(GraphQLString)
+                )
+                .build();
+
+        final GraphQLObjectType moduleType = newObject()
+                .name("Module")
+                .field(field -> field
+                        .name("id")
+                        .type(GraphQLString)
+                )
+                .field(field -> field
+                        .name("mod_name")
+                        .type(GraphQLString)
+                )
+                .field(field -> field
+                        .name("devices")
+                        .type(list(deviceType))
+                        .dataFetcher(dataFetchers.devicesFetcher)
+                )
+                .build();
+
         return GraphQLSchema.newSchema()
                 .query(newObject()
                         .name("query")
                         .field(field -> field
                                 .name("modules")
-                                .type(list(dataModels.moduleType))
+                                .type(list(moduleType))
                                 .dataFetcher(dataFetchers.modulesFetcher)
                         )
                         .field(field -> field
@@ -34,7 +64,7 @@ public class SchemaConfig {
                                         .name("id")
                                         .type(GraphQLString)
                                 )
-                                .type(dataModels.moduleType)
+                                .type(moduleType)
                                 .dataFetcher(dataFetchers.moduleByIdFetcher)
                         )
                         .build())

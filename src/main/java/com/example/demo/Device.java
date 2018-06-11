@@ -10,5 +10,5 @@ public class Device {
     @Id
     private String id;
 
-    private String name;
+    private String hostname;
 }
