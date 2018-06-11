@@ -1,18 +1,20 @@
 package com.example.demo;
 
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
 @Getter
+@Document(collection = "project_module")
 public class Module {
-    final String id;
-    final String mod_name;
-    final List<Device> deviceList;
+    @Id
+    private String id;
 
-    public Module(String id, String name, List<Device> deviceList) {
-        this.id = id;
-        this.mod_name = name;
-        this.deviceList = deviceList;
-    }
+    private String mod_name;
+
+    @Field("device")
+    private List<String> deviceIdList;
 }

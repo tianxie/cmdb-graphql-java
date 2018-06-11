@@ -1,14 +1,14 @@
 package com.example.demo;
 
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
+@Document(collection = "device")
 public class Device {
-    final String id;
-    final String name;
+    @Id
+    private String id;
 
-    public Device(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    private String name;
 }

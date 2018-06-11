@@ -4,6 +4,7 @@ import org.dataloader.BatchLoader;
 import org.dataloader.DataLoader;
 import org.dataloader.DataLoaderRegistry;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -33,7 +34,8 @@ public class DataWiring {
     }
 
     private static List<Object> getModulesFromMongo(List<String> keys) {
-        return keys.stream().map(MockData::getModule).collect(Collectors.toList());
+//        return keys.stream().map(MockData::getModule).collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     // a batch loader function that will be called with N or more keys for batch loading
