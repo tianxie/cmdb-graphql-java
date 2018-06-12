@@ -28,7 +28,7 @@ public class DataFetchers {
 
     DataFetcher<List<Device>> devicesFetcher = environment -> {
         final Module module = environment.getSource();
-        final List<String> deviceIdList = module.getDeviceIdStringList();
+        final List<String> deviceIdList = module.getDeviceIdList();
         return deviceIdList.stream()
                 .map(id -> deviceRepository.findById(id))
                 .filter(Optional::isPresent)

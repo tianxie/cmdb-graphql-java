@@ -1,10 +1,9 @@
 package com.example.demo;
 
+import com.google.gson.Gson;
 import lombok.Getter;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,17 +16,17 @@ public class Module {
 
     private String mod_name;
 
-    @Field("device")
-    private List<DeviceId> deviceIdList;
+    private List<String> device;
 
-    public List<String> getDeviceIdStringList() {
-        return deviceIdList.stream()
+    public List<String> getDeviceIdList() {
+        Gson gson = new Gson();
+        return device.stream()
+                .map(s -> gson.fromJson(s, DeviceId.class))
                 .map(deviceId -> deviceId.id)
                 .collect(Collectors.toList());
     }
 
-    class DeviceId {
-        @Field("id")
+    private class DeviceId {
         String id;
     }
 }
