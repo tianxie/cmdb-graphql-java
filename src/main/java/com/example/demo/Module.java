@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Document(collection = "project_module")
@@ -20,9 +21,9 @@ public class Module {
 
     public List<String> getDeviceIdList() {
         Gson gson = new Gson();
-        return device.stream()
-                .map(s -> gson.fromJson(s, DeviceId.class))
-                .map(deviceId -> deviceId.id)
+        Stream<String> stream = (device == null) ? Stream.empty() : device.stream();
+        return stream
+                .map(s -> s.contains("\"id\"") ? gson.fromJson(s, DeviceId.class).id : s)
                 .collect(Collectors.toList());
     }
 

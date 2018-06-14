@@ -16,9 +16,6 @@ public class SchemaConfig {
     @Autowired
     private DataFetchers dataFetchers;
 
-//    @Autowired
-//    private DataModels dataModels;
-
     @Bean
     GraphQLSchema schema() {
         final GraphQLObjectType deviceType = newObject()
@@ -46,7 +43,7 @@ public class SchemaConfig {
                 .field(field -> field
                         .name("devices")
                         .type(list(deviceType))
-                        .dataFetcher(dataFetchers.devicesFetcher)
+                        .dataFetcher(dataFetchers.devicesOfModuleFetcher)
                 )
                 .build();
 
@@ -56,7 +53,7 @@ public class SchemaConfig {
                         .field(field -> field
                                 .name("modules")
                                 .type(list(moduleType))
-                                .dataFetcher(dataFetchers.modulesFetcher)
+                                .dataFetcher(dataFetchers.allModulesFetcher)
                         )
                         .field(field -> field
                                 .name("module")

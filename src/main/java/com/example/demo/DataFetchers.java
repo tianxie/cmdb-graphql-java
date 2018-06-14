@@ -3,12 +3,12 @@ package com.example.demo;
 import com.example.demo.db.DeviceRepository;
 import com.example.demo.db.ModuleRepository;
 import graphql.schema.DataFetcher;
+import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class DataFetchers {
@@ -19,20 +19,26 @@ public class DataFetchers {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    DataFetcher<List<Module>> modulesFetcher = environment -> moduleRepository.findAll();
+    @Autowired
+    @Qualifier("moduleDataLoader")
+    private DataLoader<String, Module> moduleDataLoader;
 
-    DataFetcher<Module> moduleByIdFetcher = environment -> {
+    @Autowired
+    @Qualifier("deviceDataLoader")
+    private DataLoader<String, Device> deviceDataLoader;
+
+    DataFetcher<List<Module>> allModulesFetcher = environment -> moduleRepository.findAll();
+
+    DataFetcher<List<Device>> allDevicesFetcher = environment -> deviceRepository.findAll();
+
+    DataFetcher moduleByIdFetcher = environment -> {
         final String id = environment.getArgument("id");
-        return moduleRepository.findById(id).orElse(null);
+        return moduleDataLoader.load(id);
     };
 
-    DataFetcher<List<Device>> devicesFetcher = environment -> {
+    DataFetcher devicesOfModuleFetcher = environment -> {
         final Module module = environment.getSource();
         final List<String> deviceIdList = module.getDeviceIdList();
-        return deviceIdList.stream()
-                .map(id -> deviceRepository.findById(id))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        return deviceDataLoader.loadMany(deviceIdList);
     };
 }
