@@ -2,8 +2,10 @@ package com.example.demo;
 
 import com.example.demo.db.DeviceRepository;
 import com.example.demo.db.ModuleRepository;
+import graphql.execution.instrumentation.ChainedInstrumentation;
 import graphql.execution.instrumentation.Instrumentation;
 import graphql.execution.instrumentation.dataloader.DataLoaderDispatcherInstrumentation;
+import graphql.execution.instrumentation.tracing.TracingInstrumentation;
 import org.dataloader.BatchLoader;
 import org.dataloader.DataLoader;
 import org.dataloader.DataLoaderRegistry;
@@ -16,6 +18,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static graphql.execution.instrumentation.dataloader.DataLoaderDispatcherInstrumentationOptions.newOptions;
+import static java.util.Arrays.asList;
 
 @Component
 @Configuration
@@ -32,7 +37,10 @@ public class DataLoaderConfig {
         DataLoaderRegistry registry = new DataLoaderRegistry();
         registry.register("moduleDataLoader", moduleDataLoader());
         registry.register("deviceDataLoader", deviceDataLoader());
-        return new DataLoaderDispatcherInstrumentation(registry);
+        final DataLoaderDispatcherInstrumentation dataLoaderDispatcherInstrumentation = new DataLoaderDispatcherInstrumentation(registry, newOptions().includeStatistics(true));
+        return new ChainedInstrumentation(
+                asList(new TracingInstrumentation(), dataLoaderDispatcherInstrumentation)
+        );
     }
 
     @Bean("deviceDataLoader")
